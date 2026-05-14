@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Record Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1>Student Portal</h1>
+            <p>Manage your institution's records with ease</p>
+        </header>
+
+        <main class="dashboard">
+            <section class="form-section glass-panel">
+                <h2 id="form-title">Add New Student</h2>
+                <form id="student-form">
+                    <input type="hidden" id="student-db-id">
+                    
+                    <div class="input-group">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId" required placeholder="e.g. S1023">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" required placeholder="e.g. Jane Doe">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" required min="1" placeholder="e.g. 20">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="course">Course</label>
+                        <input type="text" id="course" required placeholder="e.g. Computer Science">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn primary-btn" id="submit-btn">Save Student</button>
+                        <button type="button" class="btn secondary-btn hidden" id="cancel-btn">Cancel Edit</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="table-section glass-panel">
+                <h2>Enrolled Students</h2>
+                <div class="table-container">
+                    <table id="students-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Course</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-list">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
