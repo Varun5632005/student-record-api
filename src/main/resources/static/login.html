@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Student Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+        }
+        .auth-toggle {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .auth-toggle a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-toggle a:hover {
+            text-decoration: underline;
+        }
+        #error-msg {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            text-align: center;
+            min-height: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-card glass-panel">
+            <header style="margin-bottom: 1.5rem;">
+                <h1 style="font-size: 2rem;">Welcome Back</h1>
+                <p id="auth-subtitle">Please enter your credentials</p>
+            </header>
+
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required placeholder="Enter username">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="Enter password">
+                </div>
+
+                <div id="error-msg"></div>
+
+                <div class="form-actions" style="margin-top: 1.5rem;">
+                    <button type="submit" class="btn primary-btn" id="auth-btn">Login</button>
+                </div>
+            </form>
+
+            <div class="auth-toggle">
+                <span id="toggle-text">Don't have an account?</span>
+                <a href="#" id="toggle-auth">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const authForm = document.getElementById('login-form');
+        const authBtn = document.getElementById('auth-btn');
+        const toggleAuth = document.getElementById('toggle-auth');
+        const authTitle = document.querySelector('.auth-card h1');
+        const authSubtitle = document.getElementById('auth-subtitle');
+        const toggleText = document.getElementById('toggle-text');
+        const errorMsg = document.getElementById('error-msg');
+
+        let isLogin = true;
+
+        toggleAuth.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLogin = !isLogin;
+            if (isLogin) {
+                authTitle.innerText = 'Welcome Back';
+                authSubtitle.innerText = 'Please enter your credentials';
+                authBtn.innerText = 'Login';
+                toggleText.innerText = "Don't have an account?";
+                toggleAuth.innerText = 'Sign Up';
+            } else {
+                authTitle.innerText = 'Create Account';
+                authSubtitle.innerText = 'Sign up to manage records';
+                authBtn.innerText = 'Sign Up';
+                toggleText.innerText = "Already have an account?";
+                toggleAuth.innerText = 'Login';
+            }
+            errorMsg.innerText = '';
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            errorMsg.innerText = '';
+
+            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    if (isLogin) {
+                        const user = await response.json();
+                        localStorage.setItem('user', JSON.stringify(user));
+                        window.location.href = 'index.html';
+                    } else {
+                        alert('Registration successful! Please login.');
+                        isLogin = true;
+                        authTitle.innerText = 'Welcome Back';
+                        authBtn.innerText = 'Login';
+                        toggleText.innerText = "Don't have an account?";
+                        toggleAuth.innerText = 'Sign Up';
+                    }
+                } else {
+                    const error = await response.text();
+                    errorMsg.innerText = error;
+                }
+            } catch (err) {
+                errorMsg.innerText = 'Server connection failed';
+            }
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('user')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
