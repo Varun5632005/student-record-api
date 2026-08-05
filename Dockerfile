@@ -10,4 +10,4 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "DRIVER=$(echo ${SPRING_DATASOURCE_URL:-} | grep -q 'postgresql' && echo 'org.postgresql.Driver' || echo 'org.h2.Driver') && java -Dserver.port=${PORT:-8081} -Dspring.datasource.driver-class-name=$DRIVER -jar app.jar"]
