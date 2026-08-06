@@ -9,5 +9,10 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
 EXPOSE 8080
-ENTRYPOINT ["sh", "-c", "DRIVER=$(echo ${SPRING_DATASOURCE_URL:-} | grep -q 'postgresql' && echo 'org.postgresql.Driver' || echo 'org.h2.Driver') && java -Dserver.port=${PORT:-8081} -Dspring.datasource.driver-class-name=$DRIVER -jar app.jar"]
+
+ENTRYPOINT ["/bin/sh", "entrypoint.sh"]
+
